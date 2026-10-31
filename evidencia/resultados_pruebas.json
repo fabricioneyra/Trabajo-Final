@@ -1,0 +1,164 @@
+[
+  {
+    "caso": "1. Capacidad (directo)",
+    "mensaje": "¿En qué me podés ayudar?",
+    "thread_id": "prueba-6cce40-capacidad",
+    "respuesta": "Soy el asistente virtual de FintechLab. Puedo ayudarte con:\n- Consultas sobre nuestras políticas: requisitos, plazos, tasas, documentación.\n- Evaluar una solicitud de préstamo personal (necesito tu CUIT, el monto y el plazo).\n- Consultar tu historial con nosotros y tu situación en el BCRA.\n¿Por dónde empezamos?",
+    "agente": "directo",
+    "ruta": "capacidad",
+    "tools_usadas": [],
+    "fuentes": [],
+    "latencia_ms": 1021
+  },
+  {
+    "caso": "2. FAQ con RAG",
+    "mensaje": "¿Puedo cancelar mi préstamo antes de tiempo? ¿Me cobran algo?",
+    "thread_id": "prueba-6cce40-faq",
+    "respuesta": "Sí, podés cancelar tu préstamo de forma anticipada y no se cobran penalidades. Sin embargo, deberás abonar en su totalidad los intereses ya devengados hasta la fecha de cancelación.",
+    "agente": "atencion",
+    "ruta": "rag",
+    "tools_usadas": [],
+    "fuentes": [
+      {
+        "fuente": "preguntas_frecuentes.md",
+        "seccion": "¿Puedo cancelar mi préstamo de forma anticipada?",
+        "similitud": 0.779
+      },
+      {
+        "fuente": "politica_creditos.md",
+        "seccion": "Montos y plazos",
+        "similitud": 0.487
+      },
+      {
+        "fuente": "preguntas_frecuentes.md",
+        "seccion": "¿Qué pasa si mi solicitud es rechazada?",
+        "similitud": 0.4895
+      }
+    ],
+    "latencia_ms": 3970
+  },
+  {
+    "caso": "3. Guardrail sin contexto",
+    "mensaje": "¿Cuál es el horario de las sucursales en Córdoba?",
+    "thread_id": "prueba-6cce40-guardrail",
+    "respuesta": "Lo siento, pero no tengo información sobre el horario de las sucursales en Córdoba. Puedo derivarte a un analista si lo deseas.",
+    "agente": "atencion",
+    "ruta": "rag",
+    "tools_usadas": [],
+    "fuentes": [
+      {
+        "fuente": "politica_creditos.md",
+        "seccion": "Requisitos generales",
+        "similitud": 0.3032
+      },
+      {
+        "fuente": "politica_creditos.md",
+        "seccion": "Tasas de interés",
+        "similitud": 0.2969
+      },
+      {
+        "fuente": "politica_creditos.md",
+        "seccion": "Causales de rechazo automático",
+        "similitud": 0.2916
+      }
+    ],
+    "latencia_ms": 3021
+  },
+  {
+    "caso": "4. Crédito aprobado",
+    "mensaje": "Hola, mi CUIT es 20208392213. Quiero un préstamo de 500000 a 12 meses.",
+    "thread_id": "prueba-6cce40-credito",
+    "respuesta": "Tu préstamo de $500,000 ha sido **aprobado**. \n\nAquí están los detalles:\n\n- **Tasa de interés anual:** 35%\n- **Cuota mensual estimada:** $49,981\n- **Ingreso mensual máximo estimado (30%):** $698,400\n- **Edad:** 20 años\n- **Antigüedad laboral:** 62 meses\n- **Situación en BCRA:** Normal (peor situación 1)\n- **Historial interno:** No tenés mora y no has pagado préstamos anteriores.\n\nSi tenés alguna otra consulta o necesitas más información, no dudes en preguntar.",
+    "agente": "creditos",
+    "ruta": null,
+    "tools_usadas": [
+      {
+        "nombre": "evaluar_credito",
+        "argumentos": {
+          "cuit": "20208392213",
+          "monto": 500000,
+          "plazo_meses": 12
+        }
+      }
+    ],
+    "fuentes": [],
+    "latencia_ms": 4519
+  },
+  {
+    "caso": "5. Seguimiento (memoria)",
+    "mensaje": "¿Y si lo pido a 24 meses?",
+    "thread_id": "prueba-6cce40-credito",
+    "respuesta": "Tu préstamo de $500,000 a 24 meses ha sido **aprobado**. \n\nAquí están los detalles:\n\n- **Tasa de interés anual:** 35%\n- **Cuota mensual estimada:** $29,259\n- **Ingreso mensual máximo estimado (30%):** $698,400\n- **Edad:** 20 años\n- **Antigüedad laboral:** 62 meses\n- **Situación en BCRA:** Normal (peor situación 1)\n- **Historial interno:** No tenés mora y no has pagado préstamos anteriores.\n\nSi necesitas más información o tienes alguna pregunta adicional, estoy a tu disposición.",
+    "agente": "creditos",
+    "ruta": null,
+    "tools_usadas": [
+      {
+        "nombre": "evaluar_credito",
+        "argumentos": {
+          "cuit": "20208392213",
+          "monto": 500000,
+          "plazo_meses": 24
+        }
+      }
+    ],
+    "fuentes": [],
+    "latencia_ms": 5133
+  },
+  {
+    "caso": "6. Revisión manual",
+    "mensaje": "Quiero pedir 500000 a 12 meses, mi CUIT es 20388322595",
+    "thread_id": "prueba-6cce40-revision",
+    "respuesta": "La solicitud de préstamo por 500,000 pesos a 12 meses para el CUIT 20-38832259-5 está en \"revisión manual\". Esto significa que un analista va a revisar tu caso.\n\nEl motivo de esta revisión es que tu situación crediticia en el BCRA es 3, lo que indica un riesgo intermedio. Aquí tienes algunos detalles de tu situación:\n\n- **Edad:** 26 años\n- **Antigüedad laboral:** 166 meses\n- **Situación BCRA:** 3 (riesgo intermedio)\n- **Historial interno:** No has tenido mora, pero no tienes préstamos pagados.\n- **Cuota estimada:** $51,236, lo que representa un 18.5% de un ingreso tope estimado de $275,100.\n\nTe notificaremos sobre la decisión del analista en cuanto esté disponible. Si necesitas más información, no dudes en preguntar.",
+    "agente": "creditos",
+    "ruta": null,
+    "tools_usadas": [
+      {
+        "nombre": "evaluar_credito",
+        "argumentos": {
+          "cuit": "20388322595",
+          "monto": 500000,
+          "plazo_meses": 12
+        }
+      }
+    ],
+    "fuentes": [],
+    "latencia_ms": 5698
+  },
+  {
+    "caso": "7. Rechazo automático",
+    "mensaje": "CUIT 20231293796, necesito 500000 en 12 cuotas",
+    "thread_id": "prueba-6cce40-rechazo",
+    "respuesta": "La solicitud de préstamo de $500,000 en 12 cuotas ha sido **rechazada**. \n\n**Motivo:** El cliente presenta una situación 4 en el BCRA, lo que indica un estado de alerta en su comportamiento crediticio. \n\n**Detalles adicionales:**\n- **Edad:** 19 años\n- **Antigüedad laboral:** 60 meses\n- **Ingreso mensual:** $2,809,000\n- **Historial interno:** Tiene una deuda en mora sin préstamos pagados.\n\nAdemás, la cuota estimada de $52,506 supera el 30% del ingreso, que es aproximadamente $842,700.\n\nSi necesitas más información o ayuda con otro tema, no dudes en preguntar.",
+    "agente": "creditos",
+    "ruta": null,
+    "tools_usadas": [
+      {
+        "nombre": "evaluar_credito",
+        "argumentos": {
+          "cuit": "20231293796",
+          "monto": 500000,
+          "plazo_meses": 12
+        }
+      },
+      {
+        "nombre": "buscar_cliente",
+        "argumentos": {
+          "cuit": "20231293796"
+        }
+      }
+    ],
+    "fuentes": [],
+    "latencia_ms": 5478
+  },
+  {
+    "caso": "8. Fuera de alcance",
+    "mensaje": "¿Me recomendás una serie para ver este finde?",
+    "thread_id": "prueba-6cce40-fuera",
+    "respuesta": "No puedo ayudar con eso, pero si tenés preguntas sobre préstamos personales, aquí estoy para ayudarte.",
+    "agente": "directo",
+    "ruta": "directo",
+    "tools_usadas": [],
+    "fuentes": [],
+    "latencia_ms": 1421
+  }
+]

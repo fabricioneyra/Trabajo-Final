@@ -1,0 +1,11 @@
+.env
+venv/
+.venv/
+__pycache__/
+*.pyc
+.git/
+data/fintechlab.db
+data/checkpoints.db*
+data/indice_atencion.json
+data/chroma/
+evidencia/
